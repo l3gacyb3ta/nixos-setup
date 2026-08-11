@@ -33,8 +33,7 @@
 		};
 
 		packages.x86_64-linux = {
-			gram = (import nixpkgs { system = "x86_64-linux"; }).callPackage ./pkgs/gram.nix { };
+			gram = (import nixpkgs { system = "x86_64-linux"; overlays = [ (import ./overlays) ]; }).callPackage ./pkgs/gram.nix { };
 		};
 	};
-
 }
