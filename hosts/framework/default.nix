@@ -84,10 +84,20 @@
     packages = with pkgs; [
     #  thunderbird
     ];
+    shell = pkgs.fish;
   };
 
-  # Install firefox.
-  programs.firefox.enable = true;
+	xdg = {
+		portal = {
+			enable = true;
+			extraPortals = with pkgs; [
+				xdg-desktop-portal-wlr
+				xdg-desktop-portal-gtk
+			];
+		};
+	};
+
+	nixpkgs.overlays = [ (import ../../overlays) ];
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
@@ -99,7 +109,12 @@
   #  wget
 		micro
 		git
+		wget
   ];
+
+  programs = {
+  	fish.enable = true;
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.

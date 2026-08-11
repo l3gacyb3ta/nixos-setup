@@ -1,8 +1,17 @@
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 {
 	home.stateVersion = "26.05";
 
+	imports = [
+		./wallpaper.nix
+	];
+
 	programs = {
+		direnv = {
+			enable = true;
+			nix-direnv.enable = true;
+		};
+	
 		git = {
 			enable = true;
 			settings.user = {
@@ -17,7 +26,16 @@
 			clean.extraArgs = "--keep-since 7d --keep 5";
 			flake = "/home/arcade/nixos";
 		};
+
+		fish.enable = true;
 	};
 
-	home.packages = with pkgs; [ ];
+	home.packages = with pkgs; [
+		# dev
+		pkgs.gram
+
+		# communication
+		inputs.helium.packages.${pkgs.system}.default
+		slack
+	];
 }

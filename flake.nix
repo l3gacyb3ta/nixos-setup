@@ -8,6 +8,11 @@
 			url = "github:nix-community/home-manager/release-26.05";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
+
+		helium = {
+			url = "github:AlvaroParker/helium-nix";
+			inputs.nixpkgs.follows = "nixpkgs";
+		};
 	};
 
 	outputs = { self, nixpkgs, nixos-hardware, home-manager , ... }@inputs: {
@@ -21,9 +26,15 @@
 				{
 					home-manager.useGlobalPkgs = true;
 					home-manager.useUserPackages = true;
-					home-manager.users.arcade = import ./home/arcade.nix;
+					home-manager.extraSpecialArgs = { inherit inputs; };
+					home-manager.users.arcade = import ./home/arcade;
 				}
 			];
 		};
+
+		packages.x86_64-linux = {
+			gram = (import nixpkgs { system = "x86_64-linux"; }).callPackage ./pkgs/gram.nix { };
+		};
 	};
+
 }
