@@ -10,7 +10,21 @@
       ./hardware-configuration.nix
     ];
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings = {
+    experimental-features = [ "nix-command" "flakes" ];
+  
+    substituters = [
+      "https://cache.nixos.org"
+      "https://arcadesagency.cachix.org"
+    ];
+
+    trusted-public-keys = [
+      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+      "arcadesagency.cachix.org-1:sjLxki4X0B5zor3c+phsFsHY3LA8B4Rp+hNxIPRgUpg="
+    ];
+
+    trusted-users = [ "arcade" ];
+  };
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
