@@ -34,6 +34,7 @@
 		# dev
 		pkgs.gram
 		claude-code
+		btop
 
 		# communication
 		inputs.helium.packages.${pkgs.system}.default

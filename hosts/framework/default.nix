@@ -27,17 +27,29 @@
   };
 
   # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  
+  boot = {
+  	loader = {
+  		systemd-boot.enable = true;
+			efi.canTouchEfiVariables = true;
+   	};
+   	kernelParams = [
+   		"ttm.pages_limit=12582912"
+   		"amdgpu.gttsize=49152"
+   	];
+  	# Use latest kernel.
+ 		kernelPackages = pkgs.linuxPackages_latest;
+  };
 
-  # Use latest kernel.
-  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   networking.hostName = "framework"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Enable networking
   networking.networkmanager.enable = true;
+
+	# enable gpu 
+	hardware.graphics.enable = true;
 
   # Set your time zone.
   time.timeZone = "America/New_York";
@@ -94,7 +106,7 @@
   users.users."arcade" = {
     isNormalUser = true;
     description = "Arcade Wise";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "render" "video" ];
     packages = with pkgs; [
     #  thunderbird
     ];
@@ -126,8 +138,29 @@
 		wget
 		gnomeExtensions.dash-to-dock
 		gnomeExtensions.blur-my-shell
+
+		vulkan-tools
+		(llama-cpp.override { vulkanSupport = true; } )
   ];
 
+
+	services = {
+		ollama = {
+			enable = true;
+			package = pkgs.ollama-rocm;
+			rocmOverrideGfx = "11.5.1";
+			environmentVariables = {
+				OLLAMA_FLASH_ATTENTION = "1";
+				OLLAMA_KEEP_ALIVE = "-1";
+			};
+		};
+
+		open-webui = {
+			enable = true;
+			port = 8091;
+		};
+	};
+	
   programs = {
   	fish.enable = true;
   };
