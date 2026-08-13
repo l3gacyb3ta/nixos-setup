@@ -33,9 +33,11 @@
 	home.packages = with pkgs; [
 		# dev
 		pkgs.gram
+		claude-code
 
 		# communication
 		inputs.helium.packages.${pkgs.system}.default
 		slack
+		python313Packages.nomadnet
 	];
 }

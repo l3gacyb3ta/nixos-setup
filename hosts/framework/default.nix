@@ -12,7 +12,7 @@
 
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
-  
+
     substituters = [
       "https://cache.nixos.org"
       "https://arcadesagency.cachix.org"
@@ -124,6 +124,8 @@
 		micro
 		git
 		wget
+		gnomeExtensions.dash-to-dock
+		gnomeExtensions.blur-my-shell
   ];
 
   programs = {
