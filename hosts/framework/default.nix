@@ -85,6 +85,11 @@
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
+  # Enable tailscale
+  services.tailscale = {
+  	enable = true;
+  };
+
   # Enable sound with pipewire.
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
@@ -136,30 +141,32 @@
 		micro
 		git
 		wget
+		binutils
 		gnomeExtensions.dash-to-dock
 		gnomeExtensions.blur-my-shell
+		gnomeExtensions.caffeine
 
 		vulkan-tools
 		(llama-cpp.override { vulkanSupport = true; } )
   ];
 
 
-	services = {
-		ollama = {
-			enable = true;
-			package = pkgs.ollama-rocm;
-			rocmOverrideGfx = "11.5.1";
-			environmentVariables = {
-				OLLAMA_FLASH_ATTENTION = "1";
-				OLLAMA_KEEP_ALIVE = "-1";
-			};
-		};
-
-		open-webui = {
-			enable = true;
-			port = 8091;
-		};
-	};
+# 	services = {
+# 		ollama = {
+# 			enable = true;
+# 			package = pkgs.ollama-rocm;
+# 			rocmOverrideGfx = "11.5.1";
+# 			environmentVariables = {
+# 				OLLAMA_FLASH_ATTENTION = "1";
+# 				OLLAMA_KEEP_ALIVE = "-1";
+# 			};
+# 		};
+# 
+# 		open-webui = {
+# 			enable = true;
+# 			port = 8091;
+# 		};
+# 	};
 	
   programs = {
   	fish.enable = true;

@@ -18,6 +18,7 @@
 				name = "Arcade";
 				email = "l3gacy.b3ta@gmail.com";
 			};
+			settings.init.defaultBranch = "main";
 		};
 
 		nh = {
@@ -34,7 +35,14 @@
 		# dev
 		pkgs.gram
 		claude-code
-		btop
+		btop-rocm
+
+		# local inference / agents
+		hermes-agent
+
+		# thingy
+		zotero
+		deluge
 
 		# communication
 		inputs.helium.packages.${pkgs.system}.default
