@@ -13,9 +13,10 @@
 			url = "github:AlvaroParker/helium-nix";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
+		affinity-nix.url = "github:mrshmllow/affinity-nix";
 	};
 
-	outputs = { self, nixpkgs, nixos-hardware, home-manager , ... }@inputs: {
+	outputs = { self, nixpkgs, nixos-hardware, home-manager, affinity-nix, ... }@inputs: {
 		nixosConfigurations.framework = nixpkgs.lib.nixosSystem {
 			specialArgs = { inherit inputs; };
 			modules = [
@@ -29,6 +30,11 @@
 					home-manager.extraSpecialArgs = { inherit inputs; };
 					home-manager.users.arcade = import ./home/arcade;
 				}
+
+			 ({ pkgs, ... }: {
+          nixpkgs.overlays = [ affinity-nix.overlays.default ];
+          environment.systemPackages = [ pkgs.affinity-v3 ];
+        })
 			];
 		};
 

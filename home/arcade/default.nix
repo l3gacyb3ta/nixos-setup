@@ -43,6 +43,7 @@
 		# thingy
 		zotero
 		deluge
+		go-font
 
 		# communication
 		inputs.helium.packages.${pkgs.system}.default
