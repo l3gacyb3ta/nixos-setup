@@ -111,7 +111,7 @@
   users.users."arcade" = {
     isNormalUser = true;
     description = "Arcade Wise";
-    extraGroups = [ "networkmanager" "wheel" "render" "video" ];
+    extraGroups = [ "networkmanager" "wheel" "render" "video" "dialout" ];
     packages = with pkgs; [
     #  thunderbird
     ];
@@ -141,6 +141,7 @@
 		micro
 		git
 		wget
+		file
 		binutils
 		gnomeExtensions.dash-to-dock
 		gnomeExtensions.blur-my-shell

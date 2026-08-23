@@ -36,6 +36,7 @@
 		pkgs.gram
 		claude-code
 		btop-rocm
+		thonny
 
 		# local inference / agents
 		hermes-agent
@@ -43,7 +44,12 @@
 		# thingy
 		zotero
 		deluge
+
+		# fonts
 		go-font
+		comic-relief
+		garamond-libre
+		eb-garamond
 
 		# communication
 		inputs.helium.packages.${pkgs.system}.default
