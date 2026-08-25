@@ -21,7 +21,7 @@ stdenv.mkDerivation (finalAttrs: {
 
   src = fetchurl {
     url = "https://codeberg.org/GramEditor/gram/releases/download/${finalAttrs.version}/gram-linux-x86_64-${finalAttrs.version}.tar.gz";
-    hash = "sha256-/Y75IW0qqb5JqGZ8BI8xd1oUnc8gfOISO7/M/Txo9a8=";   # replace - see below
+    hash = "sha256-m5cJOfRYZr74Gazd+c9nROOtfeFwN6P+6rGwUB6pWS4=";   # replace - see below
   };
 
   # VERIFY: check the actual top-level dir in the tarball
