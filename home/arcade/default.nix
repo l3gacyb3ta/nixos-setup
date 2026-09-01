@@ -28,15 +28,39 @@
 			flake = "/home/arcade/nixos";
 		};
 
-		fish.enable = true;
+		fish = {
+			enable = true;
+
+			interactiveShellInit = ''
+			# Autoactivate devenv
+			${pkgs.devenv}/bin/devenv hook fish | source
+			'';
+		};
 	};
+
+  services.darkman = {
+    enable = true;
+
+    settings = {
+      lat = 44.47;
+      lng = -73.21;
+    };
+
+    lightModeScripts.gnome-light = ''
+      ${pkgs.glib}/bin/gsettings set org.gnome.desktop.interface color-scheme 'prefer-light'
+    '';
+
+    darkModeScripts.gnome-dark = ''
+      ${pkgs.glib}/bin/gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+    '';
+  };
 
 	home.packages = with pkgs; [
 		# dev
 		pkgs.gram
 		claude-code
 		btop-rocm
-		thonny
+		devenv
 
 		# local inference / agents
 		hermes-agent
