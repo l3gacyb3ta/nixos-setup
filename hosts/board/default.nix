@@ -35,7 +35,11 @@
 	nix.optimise.automatic = true;
 
 	boot.loader.systemd-boot.enable = true;
-	boot.loader.efi.canTouchEfiVariables = false;
+	# Must be true. With it false, bootctl copies systemd-boot onto the ESP
+	# but cannot write the NVRAM boot entry that points at it — the firmware
+	# then finds nothing to boot and stops at "booting from hard disk".
+	# Hetzner Cloud's firmware handles EFI variables fine.
+	boot.loader.efi.canTouchEfiVariables = true;
 
 	networking = {
 		hostName = "board";
