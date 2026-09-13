@@ -8,7 +8,10 @@ keys:
   - &board age1vg5w20glv7r6m22udzjau422ek4hlf38xjfctpy2qkjtryyxss0stjkvw8
 
 creation_rules:
-  - path_regex: secrets/megaapp\.env$
+    # No extension on purpose: sops picks a format from the filename, and a
+    # ".env" suffix makes it dotenv — which encrypts per line and cannot be
+    # read back as a single file for systemd's EnvironmentFile.
+  - path_regex: secrets/megaapp-env$
     key_groups:
       - age:
           - *admin

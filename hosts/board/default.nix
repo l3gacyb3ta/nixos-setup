@@ -113,13 +113,54 @@
 
 	sops.secrets."megaapp-env" = {
 		format = "binary";
-		sopsFile = ../../secrets/megaapp.env;
+		sopsFile = ../../secrets/megaapp-env;
 		# Decrypted at boot using the host's own SSH key, so no key material
 		# has to be copied anywhere after install.
 		mode = "0400";
 		owner = "root";
 	};
 	sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+
+	# How the Calibre library gets here.
+	#
+	# Syncthing shares the library from the Framework, so the board reads
+	# `metadata.db` and the epubs straight off local disk — no OPDS, no basic
+	# auth, no XML parsing, and it keeps working while the laptop is asleep.
+	#
+	# Reachable on the tailnet only: no ports are opened publicly, and both
+	# discovery and relaying are off, so it never talks to Syncthing's public
+	# infrastructure. Pair the Framework by device ID through the GUI over
+	# Tailscale.
+	services.syncthing = {
+		enable = true;
+		# Runs as the app's own user so the board can read what arrives
+		# without a group-permission dance.
+		user = "megaapp";
+		group = "megaapp";
+		dataDir = "/var/lib/megaapp/corpus";
+		configDir = "/var/lib/megaapp/syncthing";
+		# The firewall trusts tailscale0 entirely and opens nothing else, so
+		# binding everywhere still means tailnet-only in practice.
+		guiAddress = "0.0.0.0:8384";
+		openDefaultPorts = false;
+		overrideDevices = false;
+		overrideFolders = false;
+		settings = {
+			options = {
+				# Nothing about this library should reach Syncthing's public
+				# discovery or relay servers; the tailnet is the whole network.
+				globalAnnounceEnabled = false;
+				relaysEnabled = false;
+				localAnnounceEnabled = false;
+				natEnabled = false;
+				urAccepted = -1;
+			};
+		};
+	};
+
+	systemd.tmpfiles.rules = [
+		"d /var/lib/megaapp/corpus 0750 megaapp megaapp -"
+	];
 
 	security.acme = {
 		acceptTerms = true;
