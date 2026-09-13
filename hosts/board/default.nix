@@ -112,6 +112,16 @@
 	};
 
 	sops.secrets."megaapp-env" = {
+		# Whole-file, opaque, handed to systemd as an EnvironmentFile.
+		#
+		# "dotenv" also works and gives nicer git diffs (one ENC block per
+		# key rather than one blob) — but it needs `key = ""` alongside it,
+		# because `key` defaults to the *secret's name* and would otherwise
+		# look for a variable literally called "megaapp-env" inside the file.
+		#
+		# The filename has no extension on purpose: sops picks its format
+		# from the extension, and ".env" silently made this dotenv, which is
+		# what broke the first install.
 		format = "binary";
 		sopsFile = ../../secrets/megaapp-env;
 		# Decrypted at boot using the host's own SSH key, so no key material
