@@ -34,12 +34,25 @@
 	};
 	nix.optimise.automatic = true;
 
-	boot.loader.systemd-boot.enable = true;
-	# Must be true. With it false, bootctl copies systemd-boot onto the ESP
-	# but cannot write the NVRAM boot entry that points at it — the firmware
-	# then finds nothing to boot and stops at "booting from hard disk".
-	# Hetzner Cloud's firmware handles EFI variables fine.
-	boot.loader.efi.canTouchEfiVariables = true;
+	# This VM boots legacy BIOS, not UEFI.
+	#
+	# It is easy to get this wrong, because the disk *looks* UEFI: disko lays
+	# down an ESP, NixOS fills it with systemd-boot, a kernel, an initrd and a
+	# valid fallback \EFI\BOOT\BOOTX64.EFI — and the firmware ignores all of
+	# it and stops at "booting from hard disk". The tell is the MBR: 512 bytes
+	# of zeros, because nothing ever wrote BIOS boot code there.
+	#
+	# GRUB installs its core image into the 1M EF02 partition and the stage-1
+	# into the MBR, which is what this firmware actually looks for.
+	boot.loader.systemd-boot.enable = false;
+	boot.loader.efi.canTouchEfiVariables = false;
+	# No `device` here: disko already registers /dev/sda from the EF02
+	# partition, and setting it again duplicates the entry — which fails with
+	# the rather indirect "cannot have duplicated devices in mirroredBoots".
+	boot.loader.grub = {
+		enable = true;
+		efiSupport = false;
+	};
 
 	networking = {
 		hostName = "board";
