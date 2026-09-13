@@ -209,8 +209,14 @@
 		};
 	};
 
+	# Both of these have to exist before their services start. Syncthing runs
+	# under ProtectSystem=strict with only its own dataDir and configDir in
+	# ReadWritePaths, so it cannot create them itself — it just fails with
+	# "mkdir: permission denied" on a directory it owns the parent of.
 	systemd.tmpfiles.rules = [
+		"d /var/lib/megaapp 0750 megaapp megaapp -"
 		"d /var/lib/megaapp/corpus 0750 megaapp megaapp -"
+		"d /var/lib/megaapp/syncthing 0700 megaapp megaapp -"
 	];
 
 	security.acme = {
