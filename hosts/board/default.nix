@@ -52,8 +52,36 @@
 			address = "fe80::1";
 			interface = "eth0";
 		};
-		# Caddy opens 80 and 443 itself.
-		firewall.allowedTCPPorts = [ 22 ];
+		firewall = {
+			# Caddy opens 80 and 443 itself.
+			allowedTCPPorts = [ 22 ];
+			# Tailscale's UDP port, for direct connections rather than relaying
+			# everything through DERP.
+			allowedUDPPorts = [ config.services.tailscale.port ];
+			# The tailnet is trusted: it is how this box reaches Calibre and
+			# Zotero at home, and nothing else is on it.
+			trustedInterfaces = [ "tailscale0" ];
+			# Tailscale's own recommendation — strict reverse-path filtering
+			# drops replies that arrive over the tunnel.
+			checkReversePath = "loose";
+		};
+	};
+
+	# The board's own data all arrives over the public internet, but the
+	# document corpus does not: Calibre-web and Zotero's WebDAV live on the
+	# Framework, which is not publicly reachable and should stay that way.
+	# Tailscale is how the VPS gets to them, with no ports opened at home and
+	# no dynamic DNS.
+	#
+	# A sleeping laptop is simply an unreachable node — never a bug, always an
+	# expected state — so every job that touches those sources has to be
+	# retry-safe regardless.
+	services.tailscale = {
+		enable = true;
+		useRoutingFeatures = "client";
+		# Deliberately no authKeyFile: an expired key would leave a unit
+		# failing on every boot for no benefit. Run `tailscale up` once after
+		# the first install.
 	};
 
 	time.timeZone = "America/New_York";
