@@ -1,0 +1,15 @@
+# Who can decrypt what.
+#
+# Two recipients on every secret: you (to edit it) and the host (to read it at
+# boot). The host's key is derived from its SSH host key, which is planted
+# during install — so nothing has to be copied to the box afterwards.
+keys:
+  - &admin age1nkzjukezpm0n25lswwvphp9fu265dl24vdcj6rhp6c3egpkckqjqengj7h
+  - &board age1vg5w20glv7r6m22udzjau422ek4hlf38xjfctpy2qkjtryyxss0stjkvw8
+
+creation_rules:
+  - path_regex: secrets/megaapp\.env$
+    key_groups:
+      - age:
+          - *admin
+          - *board

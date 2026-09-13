@@ -9,6 +9,22 @@
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
 
+		disko = {
+			url = "github:nix-community/disko";
+			inputs.nixpkgs.follows = "nixpkgs";
+		};
+		sops-nix = {
+			url = "github:Mic92/sops-nix";
+			inputs.nixpkgs.follows = "nixpkgs";
+		};
+		# Private repo, so ssh rather than the github: fetcher, which would
+		# need a token. nixos-anywhere ships the locked inputs to the target,
+		# so the box does not fetch this during the initial install.
+		mega-app = {
+			url = "git+ssh://git@github.com/l3gacyb3ta/mega-app.git?ref=main";
+			inputs.nixpkgs.follows = "nixpkgs";
+		};
+
 		helium = {
 			url = "github:AlvaroParker/helium-nix";
 			inputs.nixpkgs.follows = "nixpkgs";
@@ -16,7 +32,19 @@
 		#affinity-nix.url = "github:mrshmllow/affinity-nix";
 	};
 
-	outputs = { self, nixpkgs, nixos-hardware, home-manager, ... }@inputs: {
+	outputs = { self, nixpkgs, nixos-hardware, home-manager, disko, sops-nix, mega-app, ... }@inputs: {
+		# board.arcades.agency — Hetzner Cloud, runs the mega-app and nothing else.
+		nixosConfigurations.board = nixpkgs.lib.nixosSystem {
+			system = "x86_64-linux";
+			specialArgs = { inherit inputs; };
+			modules = [
+				disko.nixosModules.disko
+				sops-nix.nixosModules.sops
+				mega-app.nixosModules.megaapp
+				./hosts/board/default.nix
+			];
+		};
+
 		nixosConfigurations.framework = nixpkgs.lib.nixosSystem {
 			specialArgs = { inherit inputs; };
 			modules = [
