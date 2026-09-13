@@ -34,6 +34,25 @@
 	};
 	nix.optimise.automatic = true;
 
+	# Storage drivers for the initrd.
+	#
+	# There is no hardware-configuration.nix here — nothing ever ran
+	# nixos-generate-config — so nothing else supplies these, and without them
+	# the initrd cannot see /dev/sda at all: it waits for
+	# /dev/disk/by-partlabel/disk-main-root, times out, and drops to emergency
+	# mode. Hetzner Cloud presents the disk over virtio-scsi
+	# (scsi-0QEMU_QEMU_HARDDISK_*), so virtio_scsi + sd_mod are the two that
+	# actually matter; the rest are cheap insurance.
+	boot.initrd.availableKernelModules = [
+		"virtio_pci"
+		"virtio_scsi"
+		"virtio_blk"
+		"sd_mod"
+		"sr_mod"
+		"ahci"
+		"ata_piix"
+	];
+
 	# This VM boots legacy BIOS, not UEFI.
 	#
 	# It is easy to get this wrong, because the disk *looks* UEFI: disko lays
@@ -57,6 +76,11 @@
 	networking = {
 		hostName = "board";
 		useDHCP = lib.mkDefault true;
+		# The kernel names this NIC enp1s0; Ubuntu was renaming it to eth0 via
+		# its own udev rules. Turning off predictable names makes it eth0 here
+		# too, so the IPv6 block below refers to an interface that exists —
+		# otherwise its unit fails and there is no IPv6 at all.
+		usePredictableInterfaceNames = false;
 		# Hetzner hands out IPv4 over DHCP but expects IPv6 to be set
 		# statically, with an on-link gateway at fe80::1.
 		interfaces.eth0.ipv6.addresses = [
