@@ -217,6 +217,10 @@
 		"d /var/lib/megaapp 0750 megaapp megaapp -"
 		"d /var/lib/megaapp/corpus 0750 megaapp megaapp -"
 		"d /var/lib/megaapp/syncthing 0700 megaapp megaapp -"
+		# Where the Calibre library lands. Created up front so the Syncthing
+		# folder can be pointed at a path that already exists and is already
+		# owned by the right user.
+		"d /var/lib/megaapp/corpus/calibre 0750 megaapp megaapp -"
 	];
 
 	security.acme = {
