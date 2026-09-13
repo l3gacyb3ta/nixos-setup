@@ -104,11 +104,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1789276581,
-        "narHash": "sha256-Mz723g2pBwATV5ZPOI6230T8rt+FXGujyvfQhTRFbZY=",
+        "lastModified": 1789277162,
+        "narHash": "sha256-b50A2UpTcmnqhIBb5nkqahSblCi7v4axMCzpGcg2WP8=",
         "ref": "main",
-        "rev": "f0e59199f6fffd760355c250845bdf3ea79cec57",
-        "revCount": 11,
+        "rev": "34669510d59943d61585dd1b2c2f3dbbc3d80b45",
+        "revCount": 12,
         "type": "git",
         "url": "ssh://git@github.com/l3gacyb3ta/mega-app.git"
       },
