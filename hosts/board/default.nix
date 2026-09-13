@@ -112,7 +112,7 @@
 	};
 
 	sops.secrets."megaapp-env" = {
-		format = "binary";
+format = "dotenv";
 		sopsFile = ../../secrets/megaapp.env;
 		# Decrypted at boot using the host's own SSH key, so no key material
 		# has to be copied anywhere after install.
