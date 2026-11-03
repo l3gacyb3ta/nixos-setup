@@ -1,4 +1,4 @@
-{ pkgs, inputs, ... }:
+{ pkgs, lib, inputs, ... }:
 {
 	home.stateVersion = "26.05";
 
@@ -57,9 +57,8 @@
 
 	home.packages = with pkgs; [
 		# dev
-		pkgs.gram
 		claude-code
-		btop-rocm
+		(if pkgs.stdenv.hostPlatform.isx86_64 then btop-rocm else btop)
 		devenv
 
 		# local inference / agents
@@ -76,8 +75,11 @@
 		eb-garamond
 
 		# communication
+		python313Packages.nomadnet
+	] ++ lib.optionals pkgs.stdenv.hostPlatform.isx86_64 [
+		# x86-only: gram and helium are prebuilt amd64 binaries, slack too
+		pkgs.gram
 		inputs.helium.packages.${pkgs.system}.default
 		slack
-		python313Packages.nomadnet
 	];
 }

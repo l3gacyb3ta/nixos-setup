@@ -29,10 +29,15 @@
 			url = "github:AlvaroParker/helium-nix";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
+		# Asahi kernel, firmware and boot glue for the M1 Pro. Pinned to a release
+		# tag: main already wants nixpkgs-unstable (pkgs.avd-fw). No upstream
+		# binary cache, so the first build compiles the kernel on the mac.
+		apple-silicon.url = "github:nix-community/nixos-apple-silicon/release-2026-07-30";
+
 		#affinity-nix.url = "github:mrshmllow/affinity-nix";
 	};
 
-	outputs = { self, nixpkgs, nixos-hardware, home-manager, disko, sops-nix, mega-app, ... }@inputs: {
+	outputs = { self, nixpkgs, nixos-hardware, home-manager, disko, sops-nix, mega-app, apple-silicon, ... }@inputs: {
 		# board.arcades.agency — Hetzner Cloud, runs the mega-app and nothing else.
 		nixosConfigurations.board = nixpkgs.lib.nixosSystem {
 			system = "x86_64-linux";
@@ -63,6 +68,25 @@
           #nixpkgs.overlays = [ affinity-nix.overlays.default ];
           #environment.systemPackages = [ pkgs.affinity-v3 ];
         })
+			];
+		};
+
+		# M1 Pro MacBook. Rebuild with --impure (asahi firmware lives on the ESP).
+		nixosConfigurations.mbp = nixpkgs.lib.nixosSystem {
+			specialArgs = { inherit inputs; };
+			modules = [
+				apple-silicon.nixosModules.apple-silicon-support
+				./hosts/mbp/default.nix
+				home-manager.nixosModules.home-manager
+				{
+					home-manager.useGlobalPkgs = true;
+					home-manager.useUserPackages = true;
+					home-manager.extraSpecialArgs = { inherit inputs; };
+					home-manager.users.arcade.imports = [
+						./home/arcade
+						./home/arcade/bell-labs.nix
+					];
+				}
 			];
 		};
 
