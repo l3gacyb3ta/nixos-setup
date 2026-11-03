@@ -29,10 +29,17 @@ let
 		THIS TERMINAL IS CONNECTED TO THE
 		BELL SYSTEM COMPUTING NETWORK.
 
-		UNAUTHORIZED INFERENCE IS BILLABLE.'';
+		UNAUTHORIZED INFERENCE IS BILLABLE.
+'';
+	gridPaper = pkgs.runCommand "grid-paper.png" {
+		nativeBuildInputs = [ pkgs.imagemagick ];
+	} ''
+		magick -size 48x48 xc:'${c.cream}' -fill none -stroke '#d4dbf2' \
+			-draw 'line 0,0 47,0' -draw 'line 0,0 0,47' $out
+	'';
 in
 {
-	home.packages = with pkgs; [ go-font brightnessctl ];
+	home.packages = with pkgs; [ go-font brightnessctl swaybg ];
 
 	programs.alacritty = {
 		enable = true;
@@ -64,7 +71,7 @@ in
 		'';
 		functions.fish_prompt = ''
 			set_color --bold green
-			printf '[%s@%s:%s]$ ' $USER (prompt_hostname) (prompt_pwd --full-length-dirs 2)
+			printf '[%s@%s:%s]$ ' (string upper $USER) (string upper (prompt_hostname)) (prompt_pwd --full-length-dirs 1)
 			set_color normal
 		'';
 	};
@@ -74,9 +81,9 @@ in
 		settings = {
 			# drop your own art in ~/.config/fastfetch/logo.txt, falls back to the distro logo
 			logo = {
-				type = "file";
-				source = "~/.config/fastfetch/logo.txt";
-				color."1" = "blue";
+				type = "chafa";
+				source = ./bell.png;
+				width = 30;
 				padding.right = 3;
 			};
 			display = {
@@ -147,7 +154,6 @@ in
 				xkb { layout "us"; }
 			}
 			touchpad {
-				tap
 				scroll-factor 0.6
 			}
 			mouse {
@@ -179,6 +185,8 @@ in
 		spawn-at-startup "xwayland-satellite"
 		environment { DISPLAY ":0"; }
 
+		spawn-at-startup "swaybg" "-i" "${gridPaper}" "-m" "tile"
+
 		window-rule {
 			geometry-corner-radius 0
 			clip-to-geometry true
@@ -187,6 +195,7 @@ in
 		binds {
 			Mod+Return { spawn "alacritty"; }
 			Mod+D { spawn "fuzzel"; }
+			Mod+B { spawn "helium"; }
 			Mod+Q { close-window; }
 			Mod+Shift+E { quit; }
 

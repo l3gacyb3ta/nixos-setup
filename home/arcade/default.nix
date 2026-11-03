@@ -64,6 +64,7 @@
 		# thingy
 		zotero
 		pkgs.gram
+		inputs.helium.packages.${pkgs.system}.default
 		deluge
 
 		# fonts
@@ -75,8 +76,7 @@
 		# communication
 		python313Packages.nomadnet
 	] ++ lib.optionals pkgs.stdenv.hostPlatform.isx86_64 [
-		# x86-only: gram and helium are prebuilt amd64 binaries, slack too
-		inputs.helium.packages.${pkgs.system}.default
+		# x86-only: slack is a prebuilt amd64 binary
 		slack
 	];
 }

@@ -25,8 +25,11 @@
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
 
+		# Upstream helium-linux ships per-arch tarballs; this flake picks the right
+		# one (AlvaroParker/helium-nix hardcoded the x86_64 AppImage, so the
+		# aarch64 build was an unrunnable amd64 binary).
 		helium = {
-			url = "github:AlvaroParker/helium-nix";
+			url = "github:schembriaiden/helium-browser-nix-flake";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
 		# Asahi kernel, firmware and boot glue for the M1 Pro. Pinned to a release
