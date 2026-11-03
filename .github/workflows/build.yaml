@@ -28,3 +28,6 @@ jobs:
 
       - name: Build gram
         run: nix build -L .#gram
+
+      - name: Build psf
+        run: nix build -L .#go-mono-psf
