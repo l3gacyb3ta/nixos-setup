@@ -61,11 +61,9 @@
 		(if pkgs.stdenv.hostPlatform.isx86_64 then btop-rocm else btop)
 		devenv
 
-		# local inference / agents
-		hermes-agent
-
 		# thingy
 		zotero
+		pkgs.gram
 		deluge
 
 		# fonts
@@ -78,7 +76,6 @@
 		python313Packages.nomadnet
 	] ++ lib.optionals pkgs.stdenv.hostPlatform.isx86_64 [
 		# x86-only: gram and helium are prebuilt amd64 binaries, slack too
-		pkgs.gram
 		inputs.helium.packages.${pkgs.system}.default
 		slack
 	];

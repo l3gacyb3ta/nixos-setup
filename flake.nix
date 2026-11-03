@@ -72,11 +72,11 @@
 		};
 
 		# M1 Pro MacBook. Rebuild with --impure (asahi firmware lives on the ESP).
-		nixosConfigurations.mbp = nixpkgs.lib.nixosSystem {
+		nixosConfigurations.cascades = nixpkgs.lib.nixosSystem {
 			specialArgs = { inherit inputs; };
 			modules = [
 				apple-silicon.nixosModules.apple-silicon-support
-				./hosts/mbp/default.nix
+				./hosts/cascades/default.nix
 				home-manager.nixosModules.home-manager
 				{
 					home-manager.useGlobalPkgs = true;
@@ -90,8 +90,8 @@
 			];
 		};
 
-		packages.x86_64-linux = {
-			gram = (import nixpkgs { system = "x86_64-linux"; overlays = [ (import ./overlays) ]; }).callPackage ./pkgs/gram.nix { };
-		};
+		packages = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-linux"] (system:  {
+			gram = (import nixpkgs { inherit system; overlays = [ (import ./overlays) ]; }).callPackage ./pkgs/gram.nix { };
+		});
 	};
 }

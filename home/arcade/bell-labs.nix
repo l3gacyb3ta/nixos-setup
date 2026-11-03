@@ -29,11 +29,10 @@ let
 		THIS TERMINAL IS CONNECTED TO THE
 		BELL SYSTEM COMPUTING NETWORK.
 
-		UNAUTHORIZED INFERENCE IS BILLABLE.
-	'';
+		UNAUTHORIZED INFERENCE IS BILLABLE.'';
 in
 {
-	home.packages = with pkgs; [ go-font ];
+	home.packages = with pkgs; [ go-font brightnessctl ];
 
 	programs.alacritty = {
 		enable = true;
@@ -149,7 +148,10 @@ in
 			}
 			touchpad {
 				tap
-				natural-scroll
+				scroll-factor 0.6
+			}
+			mouse {
+				scroll-factor 1.0
 			}
 		}
 
@@ -220,6 +222,8 @@ in
 			XF86AudioMute allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
 			XF86MonBrightnessUp { spawn "brightnessctl" "set" "5%+"; }
 			XF86MonBrightnessDown { spawn "brightnessctl" "set" "5%-"; }
+			Shift+XF86MonBrightnessUp { spawn "brightnessctl" "--device='kbd_backlight'" "set" "5%+"; }
+			Shift+XF86MonBrightnessDown { spawn "brightnessctl" "--device='kbd_backlight'" "set" "5%-"; }
 		}
 	'';
 }
