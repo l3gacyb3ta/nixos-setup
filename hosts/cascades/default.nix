@@ -14,6 +14,19 @@
 	# redistributable so don't copy it into this public repo.
 
 	boot.loader.systemd-boot.enable = true;
+	boot.loader.timeout = 0;
+	boot.m1n1CustomLogo = ./bell.png;
+
+	nixpkgs.overlays = [
+		(final: prev: {
+			uboot-asahi = prev.uboot-asahi.overrideAttrs (o: {
+				extraConfig = o.extraConfig + ''
+	CONFIG_BOOTDELAY=0
+'';
+			});
+		})
+	];
+	
 	# the asahi module forces efi.canTouchEfiVariables off, m1n1/u-boot own boot
 
 	networking.hostName = "cascades";
@@ -29,6 +42,14 @@
 	];
 
 	fonts.packages = [ pkgs.go-font ];
+
+	services.physlock = {
+		enable = true;
+		allowAnyUser = true;
+		lockOn.suspend = true;
+		muteKernelMessages = true;
+		lockMessage = "\n  TERMINAL SUSPENDED. AUTHENTICATE.";
+	};
 
 	system.stateVersion = "26.05";
 }

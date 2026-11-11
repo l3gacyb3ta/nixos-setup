@@ -95,6 +95,7 @@
 
 		packages = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-linux"] (system:  {
 			gram = (import nixpkgs { inherit system; overlays = [ (import ./overlays) ]; }).callPackage ./pkgs/gram.nix { };
+			thoth = (import nixpkgs { inherit system; overlays = [ (import ./overlays) ]; }).callPackage ./pkgs/thoth.nix { };
 		});
 	};
 }

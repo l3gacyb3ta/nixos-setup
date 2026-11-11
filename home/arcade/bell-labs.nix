@@ -37,9 +37,38 @@ let
 		magick -size 48x48 xc:'${c.cream}' -fill none -stroke '#d4dbf2' \
 			-draw 'line 0,0 47,0' -draw 'line 0,0 0,47' $out
 	'';
+
+	# thanks to https://github.com/lillycham/nixfiles
+	globe = pkgs.writeText "bell-globe.txt" ''
+         ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+
+     ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+
+   ▄████████████████████████████████▄
+
+  ████████████████████████████████████
+
+  ████████████████████████████████████
+
+   ██████████████████████████████████
+    ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+    ▀██████████████████████████████▀
+      ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+       ▀████████████████████████▀
+           ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+             ▀▀▀████████▀▀▀'';
+	
+	cursor-size = 28;
 in
 {
 	home.packages = with pkgs; [ go-font brightnessctl swaybg ];
+
+	home.pointerCursor = {
+		name = "Adwaita";
+		package = pkgs.adwaita-icon-theme;
+		size = cursor-size;
+		gtk.enable = true;
+	};
 
 	programs.alacritty = {
 		enable = true;
@@ -81,9 +110,9 @@ in
 		settings = {
 			# drop your own art in ~/.config/fastfetch/logo.txt, falls back to the distro logo
 			logo = {
-				type = "chafa";
-				source = ./bell.png;
-				width = 30;
+				type = "file";
+				source = globe;
+				color = { "1" = "blue"; };
 				padding.right = 3;
 			};
 			display = {
@@ -101,6 +130,7 @@ in
 				{ type = "terminal"; key = "TERMINAL"; }
 				{ type = "memory"; key = "CORE STORE"; }
 				{ type = "disk"; key = "MASS STORE"; folders = "/"; }
+				{ type = "battery"; key = "ENERGY STORE"; }
 				"break"
 				{ type = "command"; key = "MAINTENANCE"; text = "echo CUSTOMER RESPONSIBILITY"; }
 				{ type = "command"; key = "STATUS"; text = "echo ALL SYSTEMS NOMINAL"; }
@@ -126,6 +156,8 @@ in
 				format-disconnected = "net down";
 			};
 			battery = {
+				bat = "macsmc-battery";
+				adapter = "macsmc-ac";
 				format = "bat {capacity}%";
 				format-charging = "bat {capacity}%+";
 				format-plugged = "bat {capacity}%+";
@@ -159,6 +191,11 @@ in
 			mouse {
 				scroll-factor 1.0
 			}
+		}
+
+		cursor {
+			xcursor-theme "Adwaita"
+			xcursor-size ${toString cursor-size}
 		}
 
 		output "eDP-1" {
@@ -198,6 +235,8 @@ in
 			Mod+B { spawn "helium"; }
 			Mod+Q { close-window; }
 			Mod+Shift+E { quit; }
+			Mod+Escape { spawn "physlock" "-ms" "-p" "\n  AT&T BELL LABORATORIES\n  COMPUTING SYSTEMS DIVISION\n\n  TERMINAL 07-8290 SUSPENDED.\n  AUTHENTICATE TO RESUME SERVICE.\n"; }
+			
 
 			Mod+H { focus-column-left; }
 			Mod+L { focus-column-right; }

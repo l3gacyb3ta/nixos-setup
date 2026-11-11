@@ -3,7 +3,7 @@
 { pkgs, lib, ... }:
 
 let
-	font = pkgs.callPackage ../pkgs/go-mono-psf.nix { pixelSize = 32; };
+	gallant = pkgs.callPackage ../pkgs/gallant-psf.nix { };
 
 	# tuigreet centres each issue line on its own, so every line is padded
 	# to the same width to keep the block left-aligned like a real banner
@@ -35,7 +35,7 @@ in
 	# VT palette. tuigreet only speaks ANSI names, so the look lives here.
 	console = {
 		earlySetup = true;
-		font = "${font}/share/consolefonts/GoMono-32.psf.gz";
+		font = "${gallant}/${gallant.fontFile}";
 		colors = [
 			"fffee8" # 0  black   -> cream background
 			"aa0000" # 1  red

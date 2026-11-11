@@ -66,6 +66,7 @@
 		pkgs.gram
 		inputs.helium.packages.${pkgs.system}.default
 		deluge
+		pkgs.thoth
 
 		# fonts
 		go-font
